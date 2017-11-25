@@ -1,21 +1,36 @@
-from flask import Flask
+from flask import Flask, request
 import os
 import socket
 import json
 import requests
 
-numbers = [0,1,2,3,4,5,6,7,8,9]
+numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 done = False
 index = 0
+answer = 0
 app = Flask(__name__)
+
+@app.route("/answer", methods = ['POST'])
+def incorporate():
+    print ("received answer")
+    number = (json.loads(request.data))
+    global answer
+    answer += number
+    print (answer)
+    return "thank you", 200
 
 @app.route("/get_work")
 def send_work():
-
-    html = "<h3>Hello {name}!</h3>" \
-           "<b>Hostname:</b> {hostname}<br/>" \
-           "<b>I am a manager</b>"
-    return html.format(name=os.getenv("NAME", "world"), hostname=socket.gethostname()), 200
+    global index
+    print (index)
+    if index < len(numbers):
+        response = [numbers[index]]
+        index += 1
+        response.append(numbers[index])
+        index += 1
+    else:
+        response = "No more work go to sleep"
+    return json.dumps(response), 200
 
 @app.route("/")
 def hello():
@@ -24,6 +39,4 @@ def hello():
     return response, 200
 
 if __name__ == "__main__":
-    requests = requests.get('http://192.168.1.15:4000')
-    print (requests)
     app.run(host='0.0.0.0', port=80)

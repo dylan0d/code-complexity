@@ -1,24 +1,26 @@
 from flask import Flask
-from redis import Redis, RedisError
-import os
-import socket
-
-# Connect to Redis
-redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
+import os, socket, requests, time
+import json
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    try:
-        visits = redis.incr("counter")
-    except RedisError:
-        visits = "<i>cannot connect to Redis, counter disabled</i>"
 
     html = "<h3>Hello {name}!</h3>" \
            "<b>Hostname:</b> {hostname}<br/>" \
            "<b>Visits:</b> {visits}"
-    return html.format(name=os.getenv("NAME", "world"), hostname=socket.gethostname(), visits=visits), 500
+    return html.format(name=os.getenv("NAME", "world"), hostname=socket.gethostname()), 200
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80)
+    print (requests.get('http://192.168.1.15:1000'))
+    while(1):
+        response = requests.get('http://192.168.1.15:1000/get_work').text
+        print (response)
+        num_list = json.loads(response)
+        print (num_list)
+        answer = sum(num_list)
+        print (answer)
+        requests.post('http://192.168.1.15:1000/answer', data = json.dumps(answer))
+        time.sleep(5)
+

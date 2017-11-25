@@ -2,7 +2,7 @@ version: "3"
 services:
   manager:
     volumes: 
-      - '.:/Users/dylan/Documents/College/CSY5/ScalableComputing/Cyclometric/Manager/manager.py'
+      - '.:/Users/dylan/Documents/College/CSY5/ScalableComputing/Cyclometric/Manager/'
     # replace username/repo:tag with your name and image details
     build: .
     deploy:
@@ -12,3 +12,5 @@ services:
           memory: 50M
       restart_policy:
         condition: on-failure
+    ports:
+      - "1000:80"

@@ -2,7 +2,7 @@ version: "3"
 services:
   worker1:
     volumes: 
-      - '.:/Users/dylan/Documents/College/CSY5/ScalableComputing/Cyclometric/Worker/worker.py'
+      - '.:/Users/dylan/Documents/College/CSY5/ScalableComputing/Cyclometric/Worker/'
     # replace username/repo:tag with your name and image details
     build: .
     deploy:
@@ -16,7 +16,7 @@ services:
       - "4000:80"
   worker2:
     volumes: 
-      - '.:/Users/dylan/Documents/College/CSY5/ScalableComputing/Cyclometric/Worker/worker.py'
+      - '.:/Users/dylan/Documents/College/CSY5/ScalableComputing/Cyclometric/Worker/'
     # replace username/repo:tag with your name and image details
     build: .
     deploy:
