@@ -1,0 +1,14 @@
+version: "3"
+services:
+  manager:
+    volumes: 
+      - '.:/Users/dylan/Documents/College/CSY5/ScalableComputing/Cyclometric/Manager/manager.py'
+    # replace username/repo:tag with your name and image details
+    build: .
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
