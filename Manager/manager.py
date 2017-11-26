@@ -1,8 +1,10 @@
 from flask import Flask, request
+from radon.complexity import cc_rank, cc_visit
 import os
 import socket
 import json
 import requests
+import git
 
 numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 done = False
@@ -38,5 +40,17 @@ def hello():
     response = "I am the manager, ask me for work"
     return response, 200
 
+def setup():
+    git.Git().clone('https://github.com/dylan0d/Scalable-Computing.git')
+    repo = git.Git("./Scalable-Computing")
+    log = repo.log()
+    print (log)
+    lines = log.splitlines()
+    commits = [lines[x*6].split()[1] for x in range(int(len(lines)/6)+1)]
+    commits.reverse()
+    return commits
+
 if __name__ == "__main__":
+    commitList = setup()
+    print (commitList)
     app.run(host='0.0.0.0', port=80)

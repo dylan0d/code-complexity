@@ -1,3 +1,5 @@
 Flask
 Redis
 requests
+radon
+gitpython

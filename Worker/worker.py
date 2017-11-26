@@ -14,11 +14,11 @@ def hello():
 
 def getWork():
     response = requests.get('http://192.168.1.15:1000/get_work').text
-    print (response)
     num_list = json.loads(response)
     print (num_list)
     answer = sum(num_list)
     print (answer)
+    print (socket.gethostname())
     requests.post('http://192.168.1.15:1000/answer', data = json.dumps(answer))
     time.sleep(5)
 
