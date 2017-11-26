@@ -5,49 +5,79 @@ import socket
 import json
 import requests
 import git
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
-numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+repoUrl = 'https://github.com/KupynOrest/DeblurGAN.git'
+repoName = "./managerRepo"
+
+commitList = []
+complexityList = []
+completeList = []
 done = False
 index = 0
-answer = 0
 app = Flask(__name__)
 
 @app.route("/answer", methods = ['POST'])
 def incorporate():
     print ("received answer")
-    number = (json.loads(request.data))
-    global answer
-    answer += number
-    print (answer)
+    response = (json.loads(request.data))
+    print (response)
+    global complexityList
+    global completeList
+    complexityList[response['index']] = response['c']
+    completeList[response['index']] = True
+
+    if all(completeList):
+        plt.ylabel('some numbers')
+        plt.plot(complexityList)
+        plt.savefig('graph.png')
+
+    print (complexityList)
     return "thank you", 200
 
 @app.route("/get_work")
 def send_work():
     global index
+    global repoUrl
+    global completeList
+    global complexityList
     print (index)
-    if index < len(numbers):
-        response = [numbers[index]]
-        index += 1
-        response.append(numbers[index])
-        index += 1
+    if not all(completeList):
+        response = [repoUrl, commitList[index], index]
+        index+=1
+        index = index%len(commitList)
+        while completeList[index%len(commitList)]:
+            index +=1
+            index = index%len(commitList)
+
     else:
         response = "No more work go to sleep"
+
     return json.dumps(response), 200
 
 @app.route("/")
 def hello():
-
     response = "I am the manager, ask me for work"
     return response, 200
 
 def setup():
-    git.Git().clone('https://github.com/dylan0d/Scalable-Computing.git')
-    repo = git.Git("./Scalable-Computing")
+    global repoUrl
+    git.Git().clone(repoUrl, repoName)
+    repo = git.Git(repoName)
     log = repo.log()
-    print (log)
     lines = log.splitlines()
-    commits = [lines[x*6].split()[1] for x in range(int(len(lines)/6)+1)]
+    commits = []
+    for x in lines:
+        if "commit" == x[:6]:
+            commits.append(x.split()[1])
     commits.reverse()
+
+    global complexityList
+    global completeList
+    complexityList =  [0 for x in commits]
+    completeList = [False for x in commits]
     return commits
 
 if __name__ == "__main__":

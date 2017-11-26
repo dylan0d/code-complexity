@@ -28,4 +28,32 @@ services:
         condition: on-failure
     ports:
       - "5000:80"
+  worker3:
+    volumes: 
+      - '.:/Users/dylan/Documents/College/CSY5/ScalableComputing/Cyclometric/Worker/'
+    # replace username/repo:tag with your name and image details
+    build: .
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "6000:80"
+  worker4:
+    volumes: 
+      - '.:/Users/dylan/Documents/College/CSY5/ScalableComputing/Cyclometric/Worker/'
+    # replace username/repo:tag with your name and image details
+    build: .
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "7000:80"
     
