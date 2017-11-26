@@ -7,7 +7,7 @@ import git
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/") #check if worker is up
 def hello():
 
     html = "<h3>Hello {name}!</h3>" \
@@ -15,7 +15,7 @@ def hello():
            "<b>Visits:</b> {visits}"
     return html.format(name=os.getenv("NAME", "world"), hostname=socket.gethostname()), 200
 
-def getWork():
+def getWork(): #ask for work
     response = requests.get('http://192.168.1.15:1000/get_work').text
     response = json.loads(response)
     repo, commit, index = response 
@@ -34,12 +34,12 @@ def getWork():
     shutil.rmtree(str(socket.gethostname()))
     #time.sleep(1)
 
-def clone(url, commit):
+def clone(url, commit): #get required repo
     git.Git().clone(url, str(socket.gethostname()))
     repo = git.Git(socket.gethostname())
     repo.checkout(commit)
 
-def getCC(filepath):
+def getCC(filepath): #get cyclical complexity of file
     with open (filepath, "r") as myfile:
         data=myfile.read()
         # cc = cc_visit(data)
@@ -50,7 +50,7 @@ def getCC(filepath):
         except Exception:
             return 0
 
-def getFiles(folder):
+def getFiles(folder): #get files in repo to check
     fileList = []
     for (dirpath, dirnames, filenames) in os.walk(folder):
         if not '.git' in dirpath and not '/.' in dirpath:

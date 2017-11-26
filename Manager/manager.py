@@ -12,14 +12,13 @@ import matplotlib.pyplot as plt
 repoUrl = 'https://github.com/KupynOrest/DeblurGAN.git'
 repoName = "./managerRepo"
 
-commitList = []
-complexityList = []
-completeList = []
-done = False
-index = 0
+commitList = [] #list of commits
+complexityList = [] #list of corresponding complexities
+completeList = [] #list of commits that have been calculated
+index = 0 #next commit to check
 app = Flask(__name__)
 
-@app.route("/answer", methods = ['POST'])
+@app.route("/answer", methods = ['POST']) #to return answer
 def incorporate():
     print ("received answer")
     response = (json.loads(request.data))
@@ -30,14 +29,15 @@ def incorporate():
     completeList[response['index']] = True
 
     if all(completeList):
-        plt.ylabel('some numbers')
+        plt.ylabel('Cyclical Complexity')
+        plt.ylabel('Commit Number')
         plt.plot(complexityList)
         plt.savefig('graph.png')
 
     print (complexityList)
     return "thank you", 200
 
-@app.route("/get_work")
+@app.route("/get_work") #to ask for work to do
 def send_work():
     global index
     global repoUrl
@@ -57,12 +57,12 @@ def send_work():
 
     return json.dumps(response), 200
 
-@app.route("/")
+@app.route("/") #if you want to check that manager is up
 def hello():
     response = "I am the manager, ask me for work"
     return response, 200
 
-def setup():
+def setup(): #get list of commits in repo
     global repoUrl
     git.Git().clone(repoUrl, repoName)
     repo = git.Git(repoName)
