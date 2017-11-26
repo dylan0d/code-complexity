@@ -30,7 +30,7 @@ def incorporate():
 
     if all(completeList):
         plt.ylabel('Cyclical Complexity')
-        plt.ylabel('Commit Number')
+        plt.xlabel('Commit Number')
         plt.plot(complexityList)
         plt.savefig('graph.png')
 

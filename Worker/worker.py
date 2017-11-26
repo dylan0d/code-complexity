@@ -18,7 +18,13 @@ def hello():
 def getWork(): #ask for work
     response = requests.get('http://192.168.1.15:1000/get_work').text
     response = json.loads(response)
-    repo, commit, index = response 
+
+    try:
+        repo, commit, index = response 
+    except ValueError:
+        print (response)
+        time.sleep(30)
+        return
 
     clone(repo, commit)
 
@@ -30,6 +36,7 @@ def getWork(): #ask for work
             complexity+= getCC(fileName)
 
     answer = {"c":complexity, "index":index}
+    print (answer)
     requests.post('http://192.168.1.15:1000/answer', data = json.dumps(answer))
     shutil.rmtree(str(socket.gethostname()))
     #time.sleep(1)
