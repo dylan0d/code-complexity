@@ -1,14 +1,13 @@
-from flask import Flask, request
-from radon.complexity import cc_rank, cc_visit
-import os
-import shutil
-import socket
+#pylint: disable=C0111, C0103, W0603
 import json
-import requests
-import git
+import shutil
 import matplotlib
+from flask import Flask, request
+import git
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
+
 
 repoUrl = 'https://github.com/KupynOrest/DeblurGAN.git'
 repoName = "./managerRepo"
@@ -21,9 +20,9 @@ app = Flask(__name__)
 
 @app.route("/answer", methods = ['POST']) #to return answer
 def incorporate():
-    print ("received answer")
+    print("received answer")
     response = (json.loads(request.data))
-    print (response)
+    print(response)
     global complexityList
     global completeList
     complexityList[response['index']] = response['c']
@@ -40,7 +39,7 @@ def incorporate():
 
         plt.savefig("graph.png")
 
-    print (complexityList)
+    print(complexityList)
     return "thank you", 200
 
 @app.route("/get_work") #to ask for work to do
@@ -49,13 +48,13 @@ def send_work():
     global repoUrl
     global completeList
     global complexityList
-    print (index)
+    print(index)
     if not all(completeList):
         response = [repoUrl, commitList[index], index]
-        index+=1
+        index += 1
         index = index%len(commitList)
         while completeList[index%len(commitList)]:
-            index +=1
+            index += 1
             index = index%len(commitList)
 
     else:
@@ -76,13 +75,13 @@ def setup(): #get list of commits in repo
     lines = log.splitlines()
     commits = []
     for x in lines:
-        if "commit" == x[:6]:
+        if x[:6] == "commit":
             commits.append(x.split()[1])
     commits.reverse()
 
     global complexityList
     global completeList
-    complexityList =  [0 for x in commits]
+    complexityList = [0 for x in commits]
     completeList = [False for x in commits]
     shutil.rmtree(repoName)
 
@@ -90,5 +89,4 @@ def setup(): #get list of commits in repo
 
 if __name__ == "__main__":
     commitList = setup()
-    print (commitList)
     app.run(host='0.0.0.0', port=80)
