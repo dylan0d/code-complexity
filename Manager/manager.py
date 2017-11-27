@@ -1,6 +1,7 @@
 from flask import Flask, request
 from radon.complexity import cc_rank, cc_visit
 import os
+import shutil
 import socket
 import json
 import requests
@@ -29,10 +30,15 @@ def incorporate():
     completeList[response['index']] = True
 
     if all(completeList):
+        f, ax = plt.subplots(1)
+        xdata = range(len(complexityList))
+        ydata = complexityList
         plt.ylabel('Cyclical Complexity')
         plt.xlabel('Commit Number')
-        plt.plot(complexityList)
-        plt.savefig('graph.png')
+        ax.plot(xdata, ydata)
+        ax.set_ylim(ymin=0)
+
+        plt.savefig("graph.png")
 
     print (complexityList)
     return "thank you", 200
@@ -78,6 +84,8 @@ def setup(): #get list of commits in repo
     global completeList
     complexityList =  [0 for x in commits]
     completeList = [False for x in commits]
+    shutil.rmtree(repoName)
+
     return commits
 
 if __name__ == "__main__":

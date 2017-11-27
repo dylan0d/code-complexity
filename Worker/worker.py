@@ -7,6 +7,8 @@ import git
 
 app = Flask(__name__)
 
+lastUrl = ""
+
 @app.route("/") #check if worker is up
 def hello():
 
@@ -16,7 +18,7 @@ def hello():
     return html.format(name=os.getenv("NAME", "world"), hostname=socket.gethostname()), 200
 
 def getWork(): #ask for work
-    response = requests.get('http://192.168.1.15:1000/get_work').text
+    response = requests.get('http://10.6.90.53:1000/get_work').text
     response = json.loads(response)
 
     try:
@@ -37,12 +39,16 @@ def getWork(): #ask for work
 
     answer = {"c":complexity, "index":index}
     print (answer)
-    requests.post('http://192.168.1.15:1000/answer', data = json.dumps(answer))
-    shutil.rmtree(str(socket.gethostname()))
-    #time.sleep(1)
+    requests.post('http://10.6.90.53:1000/answer', data = json.dumps(answer))
+
 
 def clone(url, commit): #get required repo
-    git.Git().clone(url, str(socket.gethostname()))
+    global lastUrl
+    if not url == lastUrl:
+        if os.path.isdir("./"+str(socket.gethostname())):
+            shutil.rmtree(str(socket.gethostname()))
+        git.Git().clone(url, str(socket.gethostname()))
+        lastUrl = url
     repo = git.Git(socket.gethostname())
     repo.checkout(commit)
 
@@ -67,6 +73,6 @@ def getFiles(folder): #get files in repo to check
     return fileList
 
 if __name__ == "__main__":
-    print (requests.get('http://192.168.1.15:1000'))
+    print (requests.get('http://10.6.90.53:1000'))
     while(1):
         getWork()
