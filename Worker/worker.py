@@ -10,8 +10,10 @@ import git
 
 lastUrl = ""
 
+ip = '192.168.1.19'
+
 def getWork(): #ask for work
-    response = requests.get('http://10.6.90.53:1000/get_work').text
+    response = requests.get('http://'+ip+':1000/get_work').text
     response = json.loads(response)
 
     try:
@@ -32,7 +34,7 @@ def getWork(): #ask for work
 
     answer = {"c":complexity, "index":index}
     print(answer)
-    requests.post('http://10.6.90.53:1000/answer', data=json.dumps(answer))
+    requests.post('http://'+ip+':1000/answer', data=json.dumps(answer))
 
 
 def clone(url, commit): #get required repo
@@ -66,6 +68,6 @@ def getFiles(folder): #get files in repo to check
     return fileList
 
 if __name__ == "__main__":
-    print(requests.get('http://10.6.90.53:1000'))
+    print(requests.get('http://'+ip+':1000'))
     while 1:
         getWork()
