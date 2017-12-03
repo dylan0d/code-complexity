@@ -1,3 +1,8 @@
+To run this file, run docker-compose up in the Manager folder. Once the flask
+app is running, run docker-compose up in the Worker folder. The number of workers
+created is determined by the docker.yml file. Comment out any workers that are not
+required.
+
 This program calculates the cyclomatic complexity of the DeblurGAN repo on 
 github.com. It creates a manager which clones the repo and creates a list of commit 
 hashes. Any number of workers can request work from the manager, which will send
